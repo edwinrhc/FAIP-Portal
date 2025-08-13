@@ -5,7 +5,7 @@ import com.fonavi.faip.app.dto.SolicitudResponse;
 
 public interface SolicitudService {
 
-    SolicitudResponse crear(SolicitudCreateRequest solicitud);
+    SolicitudResponse crear(SolicitudCreateRequest request);
     SolicitudResponse porCodigo(String codigo);
 
 }
