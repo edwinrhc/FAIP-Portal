@@ -1,8 +1,7 @@
-package com.fonavi.faip.app.web.api;
+package com.fonavi.faip.app.controller;
 
 import com.fonavi.faip.app.dto.SolicitudCreateRequest;
 import com.fonavi.faip.app.dto.SolicitudResponse;
-import com.fonavi.faip.app.service.SolicitudService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/solicitudes")
-public class SolicitudApi {
+public class SolicitudesController {
 
-    private final SolicitudService service;
+    private final SolicitudServicebac service;
 
-    public SolicitudApi(SolicitudService service) {
+    public SolicitudesController(SolicitudServicebac service) {
         this.service = service;
     }
 

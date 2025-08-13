@@ -1,6 +1,6 @@
-package com.fonavi.faip.app.repo;
+package com.fonavi.faip.app.repository;
 
-import com.fonavi.faip.app.domain.Solicitud;
+import com.fonavi.faip.app.entity.Solicitud;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

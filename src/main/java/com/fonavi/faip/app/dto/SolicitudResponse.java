@@ -1,6 +1,6 @@
 package com.fonavi.faip.app.dto;
 
-import com.fonavi.faip.app.domain.EstadoSolicitud;
+import com.fonavi.faip.app.entity.EstadoSolicitud;
 
 import java.time.LocalDate;
 
