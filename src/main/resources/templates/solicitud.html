@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Solicitud AIP</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body class="min-h-screen bg-gray-50 flex flex-col">
+
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="flex-grow max-w-5xl mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-6">Solicitud de Acceso a la Información Pública</h1>
+
+    <div th:if="${ok}" class="mb-4 p-4 rounded-lg bg-green-50 text-green-800">[[${ok}]]</div>
+
+    <form th:action="@{/solicitud}" th:object="${form}" method="post" enctype="multipart/form-data"
+          class="bg-white rounded-2xl shadow p-6 space-y-6">
+
+        <!-- Tipo de solicitante -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">1. Tipo de solicitante</h2>
+            <div class="flex gap-6">
+                <label class="inline-flex items-center gap-2">
+                    <input type="radio" th:field="*{tipoSolicitante}" value="NATURAL" class="accent-blue-600">
+                    <span>Persona natural</span>
+                </label>
+                <label class="inline-flex items-center gap-2">
+                    <input type="radio" th:field="*{tipoSolicitante}" value="JURIDICA" class="accent-blue-600">
+                    <span>Persona jurídica</span>
+                </label>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">Si eres empresa u organización, elige “Persona jurídica”.</p>
+            <p class="text-sm text-red-600" th:if="${#fields.hasErrors('tipoSolicitante')}"
+               th:errors="*{tipoSolicitante}"></p>
+        </section>
+
+        <!-- Datos del solicitante -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">2. Datos del solicitante</h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <label class="block">
+                    <span class="text-sm">Nombres</span>
+                    <input th:field="*{nombres}" class="mt-1 w-full border rounded p-2" required>
+                    <span class="text-sm text-red-600" th:if="${#fields.hasErrors('nombres')}" th:errors="*{nombres}"></span>
+                </label>
+
+                <label class="block" th:if="*{tipoSolicitante} == 'NATURAL'">
+                    <span class="text-sm">Apellidos</span>
+                    <input th:field="*{apellidos}" class="mt-1 w-full border rounded p-2">
+                </label>
+
+                <label class="block" th:if="*{tipoSolicitante} == 'JURIDICA'">
+                    <span class="text-sm">Razón social</span>
+                    <input th:field="*{razonSocial}" class="mt-1 w-full border rounded p-2">
+                </label>
+
+                <div class="grid grid-cols-2 gap-3 md:col-span-2">
+                    <label class="block">
+                        <span class="text-sm">Tipo de documento</span>
+                        <select th:field="*{tipoDocumento}" class="mt-1 w-full border rounded p-2">
+                            <option value="">Selecciona…</option>
+                            <option value="DNI">DNI</option>
+                            <option value="CE">CE</option>
+                            <option value="PASAPORTE">PASAPORTE</option>
+                        </select>
+                        <span class="text-sm text-red-600"
+                              th:if="${#fields.hasErrors('tipoDocumento')}"
+                              th:errors="*{tipoDocumento}"></span>
+                    </label>
+
+                    <label class="block">
+                        <span class="text-sm">N° de documento</span>
+                        <input th:field="*{numeroDocumento}" class="mt-1 w-full border rounded p-2" required>
+                        <span class="text-sm text-red-600" th:if="${#fields.hasErrors('numeroDocumento')}" th:errors="*{numeroDocumento}"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contacto -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">3. Contacto</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <label class="block">
+                    <span class="text-sm">Correo electrónico</span>
+                    <input th:field="*{email}" type="email" class="mt-1 w-full border rounded p-2" placeholder="tucorreo@dominio.com" required>
+                    <span class="text-sm text-red-600" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                </label>
+                <label class="block">
+                    <span class="text-sm">Teléfono (opcional)</span>
+                    <input th:field="*{telefono}" class="mt-1 w-full border rounded p-2" placeholder="+51 9XX XXX XXX">
+                    <span class="text-sm text-red-600" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></span>
+                </label>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 mt-3">
+                <label class="block">
+                    <span class="text-sm">Dirección (opcional)</span>
+                    <input th:field="*{direccion}" class="mt-1 w-full border rounded p-2" placeholder="Calle, Mz., Lt.">
+                </label>
+                <label class="block">
+                    <span class="text-sm">Distrito (opcional)</span>
+                    <input th:field="*{distrito}" class="mt-1 w-full border rounded p-2">
+                </label>
+                <label class="block">
+                    <span class="text-sm">Provincia (opcional)</span>
+                    <input th:field="*{provincia}" class="mt-1 w-full border rounded p-2">
+                </label>
+                <label class="block">
+                    <span class="text-sm">Departamento (opcional)</span>
+                    <input th:field="*{departamento}" class="mt-1 w-full border rounded p-2">
+                </label>
+                <label class="block md:col-span-2">
+                    <span class="text-sm">País</span>
+                    <input th:field="*{pais}" class="mt-1 w-full border rounded p-2">
+                </label>
+            </div>
+        </section>
+
+        <!-- Preferencia de entrega -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">4. Preferencia de entrega</h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <label class="inline-flex items-center gap-2 border rounded p-3">
+                    <input type="radio" th:field="*{medioEntrega}" value="DIGITAL" class="accent-blue-600">
+                    <span>Digital (correo/descarga)</span>
+                </label>
+                <label class="inline-flex items-center gap-2 border rounded p-3">
+                    <input type="radio" th:field="*{medioEntrega}" value="FISICO" class="accent-blue-600">
+                    <span>Físico (reproducción con costo)</span>
+                </label>
+                <label class="inline-flex items-center gap-2 border rounded p-3">
+                    <input type="radio" th:field="*{medioEntrega}" value="PRESENCIAL" class="accent-blue-600">
+                    <span>Presencial (recojo)</span>
+                </label>
+            </div>
+            <span class="text-sm text-red-600" th:if="${#fields.hasErrors('medioEntrega')}" th:errors="*{medioEntrega}"></span>
+            <p class="text-xs text-gray-500 mt-1">Si elige entrega física podrían aplicarse costos de reproducción.</p>
+        </section>
+
+        <!-- Descripción -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">5. Descripción del pedido</h2>
+            <label class="block">
+                <span class="text-sm">Describe claramente la información que solicitas</span>
+                <textarea th:field="*{descripcion}" rows="6" class="mt-1 w-full border rounded p-2" placeholder="Ej.: Copia digital de resoluciones emitidas entre enero y marzo de 2024 sobre ..."></textarea>
+                <span class="text-sm text-red-600" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></span>
+            </label>
+            <label class="block mt-3">
+                <span class="text-sm">Observaciones / finalidad (opcional)</span>
+                <textarea th:field="*{observaciones}" rows="3" class="mt-1 w-full border rounded p-2" placeholder="Información adicional que ayude a ubicar el pedido"></textarea>
+            </label>
+        </section>
+
+        <!-- Adjuntos -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">6. Adjuntar documentos (opcional)</h2>
+            <input type="file" name="files" multiple
+                   accept=".pdf,.jpg,.png,.doc,.docx"
+                   class="block w-full text-sm file:mr-4 file:py-2 file:px-4
+                      file:rounded file:border-0 file:text-sm file:font-semibold
+                      file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <p class="text-xs text-gray-500 mt-1">Tamaño máximo recomendado: 10 MB por archivo.</p>
+        </section>
+
+        <!-- Aceptación -->
+        <section class="border-t pt-4">
+            <label class="inline-flex items-start gap-3">
+                <input type="checkbox" th:field="*{aceptaTerminos}" class="mt-1 accent-blue-600">
+                <span class="text-sm text-gray-700">
+            Declaro que la información registrada es veraz y autorizo el tratamiento de mis datos personales para la atención de mi solicitud.
+          </span>
+            </label>
+            <span class="block text-sm text-red-600" th:if="${#fields.hasErrors('aceptaTerminos')}" th:errors="*{aceptaTerminos}"></span>
+        </section>
+
+        <div class="flex items-center gap-3">
+            <button class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
+                Enviar solicitud
+            </button>
+            <a th:href="@{/static}" class="text-gray-600 hover:underline">Cancelar</a>
+        </div>
+    </form>
+</main>
+
+<!-- Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
