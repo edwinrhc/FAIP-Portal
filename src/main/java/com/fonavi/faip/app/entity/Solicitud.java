@@ -5,6 +5,7 @@ import jakarta.validation.constraints.AssertTrue;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(
@@ -18,7 +19,7 @@ public class Solicitud {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(unique = true, length = 20)
     private String codigo; // API-YYYY-00001
 
     @Column(nullable = false, name = "fecha_registro")
@@ -102,4 +103,12 @@ public class Solicitud {
     @AssertTrue(message = "Debes aceptar los términos y el tratamiento de datos")
     @Column(nullable = false, name = "acepta_terminos")
     private boolean aceptaTerminos;
+
+    @PostPersist
+    public void generarCodigoUnico() {
+        if (this.codigo == null) {
+            String año = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"));
+            this.codigo = String.format("FAIP-%s-%04d", año, this.id);
+        }
+    }
 }

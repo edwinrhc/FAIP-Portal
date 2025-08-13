@@ -94,6 +94,13 @@
             <version>2.8.9</version> <!-- o la última 2.8.x -->
         </dependency>
 
+
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

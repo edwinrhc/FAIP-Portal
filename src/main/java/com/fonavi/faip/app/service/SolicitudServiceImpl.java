@@ -1,17 +1,22 @@
 package com.fonavi.faip.app.service;
 
 
+import com.fonavi.faip.app.dto.SeguimientoResponse;
 import com.fonavi.faip.app.dto.SolicitudCreateRequest;
 import com.fonavi.faip.app.dto.SolicitudResponse;
 import com.fonavi.faip.app.dto.SolicitudUpdateEstadoRequest;
 import com.fonavi.faip.app.entity.EstadoSolicitud;
 import com.fonavi.faip.app.entity.Solicitud;
+import com.fonavi.faip.app.entity.SolicitudSeguimiento;
 import com.fonavi.faip.app.repository.SolicitudRepository;
+import com.fonavi.faip.app.repository.SolicitudSeguimientoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -19,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SolicitudServiceImpl implements SolicitudService {
 
     private final SolicitudRepository repo;
+    private final SolicitudSeguimientoRepository seguimientoRepo;
 
     //Contador en memoria (opcional si luego lo haces con base de datos)
     private static final AtomicInteger contador = new AtomicInteger(0);
@@ -57,15 +63,15 @@ public class SolicitudServiceImpl implements SolicitudService {
         entidad.setAceptaTerminos(request.aceptaTerminos());
         // Estado inicial
         entidad.setEstado(EstadoSolicitud.REGISTRADA);
-
-        // Generar código único
-        String codigo = generarCodigoUnico();
-        entidad.setCodigo(codigo);
         // Fecha de registro
         entidad.setFechaRegistro(LocalDate.now());
 
-        // Guardar en base de datos
+        // 1️⃣ Guardar primero para generar el ID
         Solicitud guardada = repo.save(entidad);
+        guardada = repo.save(guardada); // segundo save para actualizar con el código generado
+
+        // Guardar seguimiento inicial
+        guardarSeguimiento(guardada, EstadoSolicitud.REGISTRADA, "Solicitud registrada en el sistema", "Sistema");
 
         // Retornar respuesta resumida
         return mapToResponse(guardada);
@@ -79,7 +85,7 @@ public class SolicitudServiceImpl implements SolicitudService {
     }
 
 
-    //------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------
     @Override
     public SolicitudResponse actualizarEstado(Long id, SolicitudUpdateEstadoRequest request) {
       Solicitud solicitud = repo.findById(id)
@@ -87,17 +93,11 @@ public class SolicitudServiceImpl implements SolicitudService {
       solicitud.setEstado(request.estado());
       solicitud.setObservaciones(request.observacion());
       Solicitud guardada = repo.save(solicitud);
+
+        // Guardar seguimiento del cambio de estado
+        guardarSeguimiento(guardada, request.estado(), request.observacion(), "Administrador");
+
         return mapToResponse(guardada);
-    }
-
-
-    /**
-     * Genera código con formato FAIP-YYYY-#### (ejemplo: FAIP-2025-0001)
-     */
-    private String generarCodigoUnico() {
-        int secuencia = contador.incrementAndGet();
-        String año = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"));
-        return String.format("FAIP-%s-%04d", año, secuencia);
     }
 
     /**
@@ -109,6 +109,18 @@ public class SolicitudServiceImpl implements SolicitudService {
                 s.getEstado(),
                 s.getFechaRegistro()
         );
+    }
+
+
+    //------------------------------------------------------------------------------------------
+    private void guardarSeguimiento(Solicitud solicitud, EstadoSolicitud estado, String observacion, String usuario) {
+        SolicitudSeguimiento seguimiento = new SolicitudSeguimiento();
+        seguimiento.setSolicitud(solicitud);       // vínculo con la solicitud
+        seguimiento.setEstado(estado);             // estado actual
+        seguimiento.setObservacion(observacion);   // comentario o detalle
+        seguimiento.setUsuarioAccion(usuario);     // quién hizo el cambio
+        seguimiento.setFechaRegistro(LocalDateTime.now()); // fecha y hora del registro
+        seguimientoRepo.save(seguimiento);         // persiste en la BD
     }
 
 }

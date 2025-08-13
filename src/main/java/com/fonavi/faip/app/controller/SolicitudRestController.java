@@ -1,5 +1,6 @@
 package com.fonavi.faip.app.controller;
 
+import com.fonavi.faip.app.dto.SeguimientoResponse;
 import com.fonavi.faip.app.dto.SolicitudCreateRequest;
 import com.fonavi.faip.app.dto.SolicitudResponse;
 import com.fonavi.faip.app.dto.SolicitudUpdateEstadoRequest;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/solicitudes")
@@ -27,13 +30,23 @@ public class SolicitudRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PatchMapping("/{id}/estado")
+/*    @PatchMapping("/{id}/estado")
     public SolicitudResponse actualizarEstado(
             @PathVariable Long id,
             @Valid @RequestBody SolicitudUpdateEstadoRequest request
     ) {
         return service.actualizarEstado(id, request);
+    }*/
+
+    //------------------------------------------------------------------------------------------
+    @PatchMapping("/{id}/estado")
+    public ResponseEntity<SolicitudResponse> actualizarEstado(
+            @PathVariable Long id,
+            @Valid @RequestBody SolicitudUpdateEstadoRequest request) {
+        return ResponseEntity.ok(service.actualizarEstado(id, request));
     }
+
+
 
 
     /**
