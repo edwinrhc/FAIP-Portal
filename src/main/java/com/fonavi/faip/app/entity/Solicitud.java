@@ -31,7 +31,7 @@ public class Solicitud {
     @Column(nullable = false, length = 100)
     private String tipoSolicitante;  // Persona Natural / Persona Jurídica
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String nombres;
 
     @Column(length = 100)
@@ -70,6 +70,7 @@ public class Solicitud {
 
     @AssertTrue(message = "Debes aceptar los términos y el tratamiento de datos")
     private boolean aceptaTerminos;
+
 
 
 }

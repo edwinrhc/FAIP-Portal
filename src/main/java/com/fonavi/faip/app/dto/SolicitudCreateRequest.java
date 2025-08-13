@@ -8,7 +8,7 @@ public record SolicitudCreateRequest(
         @Size(max = 100, message = "El tipo de solicitante no puede superar los 100 caracteres")
         String tipoSolicitante,
 
-        @NotBlank(message = "Los nombres son obligatorios")
+
         @Size(max = 100, message = "Los nombres no pueden superar los 100 caracteres")
         String nombres,
 

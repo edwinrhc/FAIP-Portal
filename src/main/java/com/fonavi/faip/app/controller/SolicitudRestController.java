@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,10 +20,17 @@ public class SolicitudRestController {
     /**
      * Crea una nueva solicitud
      */
+//    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public SolicitudResponse crear(@Valid @RequestBody SolicitudCreateRequest request) {
+//        return service.crear(request);
+//    }
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public SolicitudResponse crear(@Valid @RequestBody SolicitudCreateRequest request) {
-        return service.crear(request);
+    public ResponseEntity<SolicitudResponse> crear(
+            @Valid @RequestBody SolicitudCreateRequest request){
+        SolicitudResponse response = service.crear(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
