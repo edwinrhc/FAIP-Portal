@@ -7,9 +7,10 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "solicitud", indexes = {
-        @Index(name="ix_solicitud_codigo",columnList = "codigo", unique = true)
-})
+@Table(
+        name = "solicitud",
+        indexes = @Index(name = "ix_solicitud_codigo", columnList = "codigo", unique = true)
+)
 @Data
 public class Solicitud {
 
@@ -20,57 +21,85 @@ public class Solicitud {
     @Column(nullable = false, unique = true, length = 20)
     private String codigo; // API-YYYY-00001
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "fecha_registro")
     private LocalDate fechaRegistro;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private EstadoSolicitud estado = EstadoSolicitud.REGISTRADA;
 
-    // -- Datos principales (simplificados) --//
-    @Column(nullable = false, length = 100)
-    private String tipoSolicitante;  // Persona Natural / Persona Jurídica
+    // Datos del solicitante
+    @Column(nullable = false, length = 100, name = "tipo_solicitante")
+    private String tipoSolicitante; // Persona Natural / Jurídica
+
+    @Column(nullable = false, length = 20, name = "tipo_documento")
+    private String tipoDocumento;
+
+    @Column(nullable = false, length = 20, name = "numero_documento")
+    private String numeroDocumento;
 
     @Column(length = 100)
     private String nombres;
 
-    @Column(length = 100)
-    private String apellidos;
+    @Column(length = 100, name = "apellidos_paterno")
+    private String apellidosPaterno;
 
-    @Column(length = 150)
+    @Column(length = 100, name = "apellidos_materno")
+    private String apellidosMaterno;
+
+    @Column(length = 150, name = "razon_social")
     private String razonSocial;
 
-    @Column(nullable = false, length = 20)
-    private String tipoDocumento;
+    @Column(length = 50)
+    private String pais = "Perú";
 
-    @Column(nullable = false, length = 20)
-    private String numeroDocumento;
+    @Column(length = 50)
+    private String departamento;
 
-    @Column(nullable = false, length = 150)
+    @Column(length = 50)
+    private String provincia;
+
+    @Column(length = 50)
+    private String distrito;
+
+    @Column(length = 200)
+    private String direccion;
+
+    // Contacto
+    @Column(length = 150)
     private String email;
 
     @Column(length = 25)
     private String telefono;
 
-    private String direccion;
-    private String distrito;
-    private String provincia;
-    private String departamento;
-    private String pais = "Perú";
+    private Integer edad;
+    private String sexo;
 
-    @Column(nullable = false, length = 20)
-    private String medioEntrega;  // DIGITAL | FISICO | PRESENCIAL
+    @Column(name = "area_pertenece")
+    private String areaPertenece;
 
+    // Descripción y observaciones
     @Lob
     @Column(nullable = false)
-    private String descripcion;
+    private String descripcion; // CLOB
 
     @Lob
-    private String observaciones;
+    private String observaciones; // CLOB
 
+    // Archivo adjunto
+    @Lob
+    @Column(name = "archivo_adjunto")
+    private byte[] archivoAdjunto; // BLOB
+
+    // Datos de entrega
+    @Column(nullable = false, length = 20, name = "medio_entrega")
+    private String medioEntrega; // DIGITAL | FISICO | PRESENCIAL
+
+    @Column(nullable = false, name = "modalidad_notificacion")
+    private String modalidadNotificacion;
+
+    // Validación
     @AssertTrue(message = "Debes aceptar los términos y el tratamiento de datos")
+    @Column(nullable = false, name = "acepta_terminos")
     private boolean aceptaTerminos;
-
-
-
 }

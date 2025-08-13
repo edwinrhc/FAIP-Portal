@@ -6,38 +6,37 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class SolicitudTipoSolicitanteValidator implements ConstraintValidator<ValidTipoSolicitante, SolicitudCreateRequest> {
 
-
     @Override
-    public boolean isValid(SolicitudCreateRequest value, ConstraintValidatorContext context) {
-        if (value == null) {
-            return true;
-        }
-        // Validar Persona Natural
-        if ("Persona Natural".equalsIgnoreCase(value.tipoSolicitante())) {
-            boolean valido = value.nombres() != null && !value.nombres().isBlank()
-                    && value.apellidos() != null && !value.apellidos().isBlank();
+    public boolean isValid(SolicitudCreateRequest dto, ConstraintValidatorContext context) {
+        if (dto == null) return true;
 
-            if (!valido) {
+        boolean esNatural = "Persona Natural".equalsIgnoreCase(dto.tipoSolicitante());
+        boolean esJuridica = "Persona Jurídica".equalsIgnoreCase(dto.tipoSolicitante());
+
+        if (esNatural) {
+            boolean nombresValidos = dto.nombres() != null && !dto.nombres().isBlank();
+            boolean apPaternoValido = dto.apellidos_paterno() != null && !dto.apellidos_paterno().isBlank();
+            boolean apMaternoValido = dto.apellidos_materno() != null && !dto.apellidos_materno().isBlank();
+
+            if (!nombresValidos || !apPaternoValido || !apMaternoValido) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(
-                        "Nombres y apellidos son obligatorios para Persona Natural"
-                ).addConstraintViolation();
+                context.buildConstraintViolationWithTemplate("Para persona natural se requieren nombres y apellidos completos")
+                        .addConstraintViolation();
+                return false;
             }
-            return valido;
         }
 
-        // Validar Persona Jurídica
-        if ("Persona Jurídica".equalsIgnoreCase(value.tipoSolicitante())) {
-            boolean valido = value.razonSocial() != null && !value.razonSocial().isBlank();
+        if (esJuridica) {
+            boolean razonValida = dto.razonSocial() != null && !dto.razonSocial().isBlank();
 
-            if (!valido) {
+            if (!razonValida) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(
-                        "Razón social es obligatoria para Persona Jurídica"
-                ).addConstraintViolation();
+                context.buildConstraintViolationWithTemplate("Para persona jurídica se requiere razón social")
+                        .addConstraintViolation();
+                return false;
             }
-            return valido;
         }
+
         return true;
     }
 }

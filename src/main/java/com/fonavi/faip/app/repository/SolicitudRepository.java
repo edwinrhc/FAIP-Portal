@@ -14,4 +14,6 @@ public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
     @Query("select count(s) from Solicitud s where  function('YEAR', s.fechaRegistro) = :year ")
     long countByYear(@Param("year") int year);
 
+    boolean existsByNumeroDocumento(String numeroDocumento);
+
 }

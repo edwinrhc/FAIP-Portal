@@ -2,6 +2,7 @@ package com.fonavi.faip.app.controller;
 
 import com.fonavi.faip.app.dto.SolicitudCreateRequest;
 import com.fonavi.faip.app.dto.SolicitudResponse;
+import com.fonavi.faip.app.dto.SolicitudUpdateEstadoRequest;
 import com.fonavi.faip.app.service.SolicitudService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,7 @@ public class SolicitudRestController {
 
     private final SolicitudService service;
 
-    /**
-     * Crea una nueva solicitud
-     */
-//    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public SolicitudResponse crear(@Valid @RequestBody SolicitudCreateRequest request) {
-//        return service.crear(request);
-//    }
+
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SolicitudResponse> crear(
@@ -32,6 +26,15 @@ public class SolicitudRestController {
         SolicitudResponse response = service.crear(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PatchMapping("/{id}/estado")
+    public SolicitudResponse actualizarEstado(
+            @PathVariable Long id,
+            @Valid @RequestBody SolicitudUpdateEstadoRequest request
+    ) {
+        return service.actualizarEstado(id, request);
+    }
+
 
     /**
      * Obtiene una solicitud por su código
