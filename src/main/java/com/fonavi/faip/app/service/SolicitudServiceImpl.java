@@ -11,8 +11,10 @@ import com.fonavi.faip.app.entity.SolicitudSeguimiento;
 import com.fonavi.faip.app.repository.SolicitudRepository;
 import com.fonavi.faip.app.repository.SolicitudSeguimientoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +27,7 @@ public class SolicitudServiceImpl implements SolicitudService {
 
     private final SolicitudRepository repo;
     private final SolicitudSeguimientoRepository seguimientoRepo;
+    private final EmailService emailService; // Servicio de envío de correos
 
     //Contador en memoria (opcional si luego lo haces con base de datos)
     private static final AtomicInteger contador = new AtomicInteger(0);
@@ -65,6 +68,9 @@ public class SolicitudServiceImpl implements SolicitudService {
         entidad.setEstado(EstadoSolicitud.REGISTRADA);
         // Fecha de registro
         entidad.setFechaRegistro(LocalDate.now());
+
+        // Calcular fecha límite (10 días hábiles)
+        entidad.setFechaLimite(calcularFechaLimite(entidad.getFechaRegistro()));
 
         // 1️⃣ Guardar primero para generar el ID
         Solicitud guardada = repo.save(entidad);
@@ -111,6 +117,20 @@ public class SolicitudServiceImpl implements SolicitudService {
         );
     }
 
+    //------------------------------------------------------------------------------------------
+    private LocalDate calcularFechaLimite(LocalDate fechaRegistro){
+        LocalDate fechaLimite = fechaRegistro;
+        int diasHabiles = 0;
+        while( diasHabiles < 10 ){
+            fechaLimite = fechaLimite.plusDays(1);
+            if(!(fechaLimite.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                    fechaLimite.getDayOfWeek() == DayOfWeek.SUNDAY)){
+                diasHabiles++;
+            }
+        }
+        return fechaLimite;
+    }
+
 
     //------------------------------------------------------------------------------------------
     private void guardarSeguimiento(Solicitud solicitud, EstadoSolicitud estado, String observacion, String usuario) {
@@ -121,6 +141,17 @@ public class SolicitudServiceImpl implements SolicitudService {
         seguimiento.setUsuarioAccion(usuario);     // quién hizo el cambio
         seguimiento.setFechaRegistro(LocalDateTime.now()); // fecha y hora del registro
         seguimientoRepo.save(seguimiento);         // persiste en la BD
+    }
+
+    // Servicio programado para avisar cuando falten 2 días
+    @Scheduled(cron = "0 0 8 * * *")
+    public void notificarVencimiento(){
+        LocalDate fechaAviso = calcularFechaLimite(LocalDate.now().minusDays(8)); // falta 2 días
+        List<Solicitud> proximasAVencer = repo.findSolicitudesPorVencer(fechaAviso);
+
+
+
+
     }
 
 }

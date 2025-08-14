@@ -25,6 +25,9 @@ public class Solicitud {
     @Column(nullable = false, name = "fecha_registro")
     private LocalDate fechaRegistro;
 
+    @Column(nullable = false, name = "fecha_limite")
+    private LocalDate fechaLimite; // <- Plazo máximo según Ley
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private EstadoSolicitud estado = EstadoSolicitud.REGISTRADA;
