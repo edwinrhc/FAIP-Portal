@@ -18,6 +18,9 @@ public interface AuthenticationService {
      */
     User autenticar(String username, String password);
 
+    User registrar(String username, String password, String roleName);
+
+
     /**
      * Verifica si un usuairo tiene los permisos necesarios para acceder a un recurso
      * @param user Usuario a verificar
