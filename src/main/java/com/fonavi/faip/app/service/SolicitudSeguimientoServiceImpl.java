@@ -4,7 +4,9 @@ import com.fonavi.faip.app.dto.SeguimientoResponse;
 import com.fonavi.faip.app.entity.SolicitudSeguimiento;
 import com.fonavi.faip.app.repository.SolicitudSeguimientoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -17,9 +19,13 @@ public class SolicitudSeguimientoServiceImpl implements SolicitudSeguimientoServ
 
     @Override
     public List<SeguimientoResponse> listarSeguimientoPorCodigo(String codigo) {
-        codigo = "FAIP-2025-0001";
         List<SolicitudSeguimiento> registros = seguimientoRepository
                 .buscarPorCodigoSolicitud(codigo);
+
+        //Validamos
+        if(registros.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron registros para el código "+ codigo);
+        }
 
         return registros.stream()
                 .map(s -> new SeguimientoResponse(
