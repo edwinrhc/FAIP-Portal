@@ -1,0 +1,61 @@
+# 📌 Plantilla de commits FAIP-Portal
+# Usa el formato Conventional Commits:
+# <tipo>(<alcance>): <breve descripción>
+# --------------------------------------------------------
+# TIPOS MÁS USADOS
+# feat:     Nueva funcionalidad
+# fix:      Corrección de errores
+# docs:     Cambios en documentación
+# style:    Cambios de formato/estilo (sin afectar lógica)
+# refactor: Refactor de código sin cambios de comportamiento
+# test:     Agregar/modificar tests
+# chore:    Tareas menores, configs, dependencias
+
+# --------------------------------------------------------
+# EJEMPLOS ADAPTADOS AL PROYECTO:
+
+# ✅ Para nuevas funciones
+# feat(security): implementar JWT con roles admin y usuario
+# feat(swagger): agregar documentación OpenAPI con springdoc
+# feat(solicitudes): endpoint para registrar nuevas solicitudes
+
+# ✅ Para correcciones
+# fix(auth): corregir validación de token expirado
+# fix(db): ajustar query para búsqueda de solicitudes
+
+# ✅ Para documentación
+# docs(readme): agregar pasos de instalación y swagger
+# docs(api): actualizar ejemplos de endpoints de solicitudes
+
+# ✅ Para cambios de formato
+# style(code): formatear clases con reglas de checkstyle
+
+# ✅ Para refactor
+# refactor(service): separar lógica de autenticación en JwtService
+
+# ✅ Para tests
+# test(solicitudes): agregar tests unitarios para controlador
+
+# ✅ Para tareas menores / configs
+# chore(deps): actualizar dependencia springdoc-openapi
+# chore(build): configurar plantilla de commit en git
+
+# --------------------------------------------------------
+# Cuerpo del commit (opcional, recomendado si el cambio es complejo)
+# Explica el QUÉ y el PORQUÉ del cambio.
+#
+# Ejemplo:
+# Se agregó la configuración de Spring Security con JWT.
+# Incluye filtros de autenticación y autorización para proteger los endpoints.
+#
+# --------------------------------------------------------
+# Footer (opcional, para issues, tickets, breaking changes)
+# Ejemplo:
+# Closes #12
+# BREAKING CHANGE: se modificó el flujo de autenticación
+
+# -----------------------------------------------------------
+Configuración para abrirlo en VSCode
+git config --global core.editor "code --wait"
+code -> es el comando de VS Code
+-- wait -> Le dice a Git que espere a que cierres el editor antes de continuar con el commit
