@@ -54,8 +54,3 @@
 # Closes #12
 # BREAKING CHANGE: se modificó el flujo de autenticación
 
-# -----------------------------------------------------------
-Configuración para abrirlo en VSCode
-git config --global core.editor "code --wait"
-code -> es el comando de VS Code
--- wait -> Le dice a Git que espere a que cierres el editor antes de continuar con el commit
