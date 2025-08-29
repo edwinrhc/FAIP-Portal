@@ -1,5 +1,6 @@
 package com.fonavi.faip.app.controller;
 
+import com.fonavi.faip.app.dto.DepartamentoResponse;
 import com.fonavi.faip.app.entity.Departamento;
 import com.fonavi.faip.app.entity.Distrito;
 import com.fonavi.faip.app.entity.Provincia;
@@ -24,8 +25,16 @@ public class UbigeoRestController {
     private final DistritoRepository distritoRepository;
 
     @GetMapping("/departamentos")
-    public List<Departamento> listarDepartamentos(){
-        return departamentoRepository.findAll();
+    public List<DepartamentoResponse> listarDepartamentos(){
+        return departamentoRepository
+                .findAll()
+                .stream()
+                .map(dep -> new DepartamentoResponse(
+                        dep.getId(),
+                        dep.getNombre(),
+                        dep.getUbigeo()
+                )).toList();
+
     }
 
     @GetMapping("/provincias/{id}/provincias")
