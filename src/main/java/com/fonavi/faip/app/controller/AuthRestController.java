@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-public class AuthController {
+public class AuthRestController {
 
     private final AuthenticationService authenticationService;
     private final TokenService tokenService;
 
-    public AuthController(AuthenticationService authenticationService, TokenService tokenService) {
+    public AuthRestController(AuthenticationService authenticationService, TokenService tokenService) {
         this.authenticationService = authenticationService;
         this.tokenService = tokenService;
     }

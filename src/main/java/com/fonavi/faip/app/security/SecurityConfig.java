@@ -21,16 +21,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http.csrf(
+                csrf -> csrf.disable())
+                .cors(cors -> {})
                 .authorizeHttpRequests( auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/solicitudes/**").permitAll()
+                        .requestMatchers("/api/v1/ubigeo/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/webjars/**"
                         ).permitAll()
-                        .requestMatchers("/api/v1/solicitudes/seguimiento/**").permitAll()
+
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/usuario/**").hasRole("USER")
                         .anyRequest().authenticated()
