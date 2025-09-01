@@ -9,6 +9,6 @@ import java.util.List;
 public interface UbigeoService {
 
         List<DepartamentoResponse> getDepartamentos();
-        List<ProvinciaResponse> getProvincias(Integer idDepartamento);
-        List<DistritoResponse>  getDistrito(Integer idProvincia);
+        List<ProvinciaResponse> getProvincias(Long idDepartamento);
+        List<DistritoResponse>  getDistrito(Long idProvincia);
 }

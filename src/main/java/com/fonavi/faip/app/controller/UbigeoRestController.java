@@ -12,6 +12,7 @@ import com.fonavi.faip.app.repository.ProvinciaRepository;
 import com.fonavi.faip.app.service.UbigeoService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,41 +26,25 @@ import java.util.List;
 public class UbigeoRestController {
 
     private final UbigeoService ubigeoService;
-    private final ProvinciaRepository provinciaRepository;
-    private final DistritoRepository distritoRepository;
 
     @GetMapping("/departamentos")
-    public List<DepartamentoResponse> listarDepartamentos(){
-        long t0 = System.nanoTime();
-        List<DepartamentoResponse> out = ubigeoService.getDepartamentos();
-        long t1 = System.nanoTime();
-        LoggerFactory.getLogger(getClass()).info("listarDepartamentos: {}ms", (t1-t0)/1000000);
-        return out;
-
+    public ResponseEntity<List<DepartamentoResponse>> getDepartamentos(){
+        return ResponseEntity.ok(ubigeoService.getDepartamentos());
     }
 
-    @GetMapping("/provincias/{departamentoId}")
-    public List<ProvinciaResponse> listarProvincias(@PathVariable Integer departamentoId){
-    return provinciaRepository.findByDepartamento_Id(departamentoId)
-            .stream()
-            .map(prov -> new ProvinciaResponse(
-                    prov.getId(),
-                    prov.getNombre(),
-                    prov.getUbigeo()
-            ))
-            .toList();
+    @GetMapping("/departamentos/{idDepartamento}/provincias")
+    public ResponseEntity<List<ProvinciaResponse>> getProvincias(@PathVariable Long idDepartamento){
+        return ResponseEntity.ok(ubigeoService.getProvincias(idDepartamento));
     }
 
-    @GetMapping("/distritos/{provinciaId}")
-    public List<DistritoResponse> listarDistritos(@PathVariable Integer provinciaId){
-    return distritoRepository.findByProvincia_Id(provinciaId)
-            .stream()
-            .map(dis -> new DistritoResponse(
-                    dis.getId(),
-                    dis.getNombre(),
-                    dis.getUbigeo()
-            )).toList();
+    @GetMapping("/provincias/{idProvincia}/distritos")
+    public ResponseEntity<List<DistritoResponse>> getDistrito(@PathVariable Long idProvincia){
+        return ResponseEntity.ok(ubigeoService.getDistrito(idProvincia));
     }
+
+
+
+
 
 
 }
