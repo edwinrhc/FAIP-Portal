@@ -54,36 +54,26 @@ public class Solicitud {
     @Column(length = 150, name = "razon_social")
     private String razonSocial;
 
-    @Column(length = 50)
-    private String pais = "Perú";
-
-/*    @Column(length = 50)
-    private String departamento;
-
-    @Column(length = 50)
-    private String provincia;
-
-    @Column(length = 50)
-    private String distrito;*/
+    @Column(length = 80, nullable = false)
+    private String pais;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "departamento_id", nullable = false,
+    @JoinColumn(name = "departamento_id", nullable = true,
             foreignKey = @ForeignKey(name = "solicitud_departamento_id_fk"))
     private Departamento departamento;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "provincia_id", nullable = false,
+    @JoinColumn(name = "provincia_id", nullable = true,
             foreignKey = @ForeignKey(name = "solicitud_provincia_id_fk"))
     private Provincia provincia;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "distrito_id", nullable = false,
+    @JoinColumn(name = "distrito_id", nullable = true,
             foreignKey = @ForeignKey(name = "solicitud_distrito_id_fk"))
     private Distrito distrito;
 
 
-
-    @Column(length = 200)
+    @Column(nullable = false, length = 300)
     private String direccion;
 
     // Contacto
@@ -96,7 +86,20 @@ public class Solicitud {
     private Integer edad;
     private String sexo;
 
-    @Column(name = "area_pertenece")
+    @Column(length = 250, name = "autoidentificacion_etnica")
+    private String autoidentificacionEtnica;
+
+    @Column(name = "lengua_materna")
+    private String lenguaMaterna;
+
+    private String discapacidad;
+
+    @Column(length = 150, name = "area_geografica")
+    private String areaGeografica;
+
+//    Paso 2
+
+    @Column(length = 100, name = "area_pertenece")
     private String areaPertenece;
 
     // Descripción y observaciones
@@ -114,10 +117,16 @@ public class Solicitud {
 
     // Datos de entrega
     @Column(nullable = false, length = 20, name = "medio_entrega")
-    private String medioEntrega; // DIGITAL | FISICO | PRESENCIAL
+    private String medioEntrega; //COPIA SIMPLE || CD || CORREO || APPLICAICONES MOVILES
+
+    @Column(length = 100, name = "otro_medio_entrega")
+    private String OtromedioEntrega; // OTRO MEDIO
 
     @Column(nullable = false, name = "modalidad_notificacion")
-    private String modalidadNotificacion;
+    private String modalidadNotificacion; // CORREO || DOMICILIO || APLICACION MOVIL
+
+    @Column(length = 100,name = "otro_modalidad_notificacion")
+    private String OtroModalidadNotificacion; // OTRA MODALIDAD
 
     // Validación
     @AssertTrue(message = "Debes aceptar los términos y el tratamiento de datos")

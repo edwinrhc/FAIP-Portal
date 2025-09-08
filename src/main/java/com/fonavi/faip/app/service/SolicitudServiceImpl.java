@@ -45,20 +45,35 @@ public class SolicitudServiceImpl implements SolicitudService {
         entidad.setApellidosPaterno(request.apellidos_paterno());
         entidad.setApellidosMaterno(request.apellidos_materno());
         entidad.setRazonSocial(request.razonSocial());
-        entidad.setPais(request.pais() == null || request.pais().isBlank() ? "Perú" : request.pais());
-/*        entidad.setDepartamento(request.departamento());
-        entidad.setProvincia(request.provincia());
-        entidad.setDistrito(request.distrito());*/
-        Departamento dep = departamentoRepository.findById(request.departamento())
-                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
-        Provincia prov = provinciaRepository.findById(request.provincia())
-                .orElseThrow(() -> new RuntimeException("Provincia no encontrada"));
-        Distrito dist = distritoRepository.findById(request.distrito())
-                .orElseThrow(() -> new RuntimeException("Distrito no encontrado"));
 
-        entidad.setDepartamento(dep);
-        entidad.setProvincia(prov);
-        entidad.setDistrito(dist);
+        entidad.setPais(request.pais());
+        boolean esPeru = request.pais() != null &&
+                (request.pais().equalsIgnoreCase("Perú") || request.pais().equalsIgnoreCase("Peru"));
+//        entidad.setPais(request.pais());
+        if(esPeru){
+            // Valida que vengan IDs
+            if(request.departamento() == null || request.provincia() == null || request.distrito() == null){
+                throw new IllegalArgumentException("Para Perú debes enviar departamento, provincia y distrito.");
+            }
+            entidad.setDepartamento(departamentoRepository.getReferenceById(request.departamento()));
+            entidad.setProvincia(provinciaRepository.getReferenceById(request.provincia()));
+            entidad.setDistrito(distritoRepository.getReferenceById(request.distrito()));
+        } else {
+            entidad.setDepartamento(null);
+            entidad.setProvincia(null);
+            entidad.setDistrito(null);
+        }
+
+//        Departamento dep = departamentoRepository.findById(request.departamento())
+//                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+//        Provincia prov = provinciaRepository.findById(request.provincia())
+//                .orElseThrow(() -> new RuntimeException("Provincia no encontrada"));
+//        Distrito dist = distritoRepository.findById(request.distrito())
+//                .orElseThrow(() -> new RuntimeException("Distrito no encontrado"));
+//
+//        entidad.setDepartamento(dep);
+//        entidad.setProvincia(prov);
+//        entidad.setDistrito(dist);
 
         entidad.setDireccion(request.direccion());
 
@@ -67,13 +82,17 @@ public class SolicitudServiceImpl implements SolicitudService {
         entidad.setTelefono(request.telefono());
         entidad.setEdad(request.edad());
         entidad.setSexo(request.sexo());
+        entidad.setAutoidentificacionEtnica(request.autoidentificacionEtnica());
+        entidad.setLenguaMaterna(request.lenguaMaterna());
+        entidad.setDiscapacidad(request.discapacidad());
+        entidad.setAreaGeografica(request.areaGeografica());
 
         entidad.setAreaPertenece(request.areaPertenece());
         entidad.setDescripcion(request.descripcion());
+        entidad.setObservaciones(request.observaciones());
+        entidad.setArchivoAdjunto(request.archivoAdjunto());
         entidad.setMedioEntrega(request.medioEntrega());
         entidad.setModalidadNotificacion(request.modalidadNotificacion());
-        entidad.setArchivoAdjunto(request.archivoAdjunto());
-        entidad.setObservaciones(request.observaciones());
         entidad.setAceptaTerminos(request.aceptaTerminos());
         // Estado inicial
         entidad.setEstado(EstadoSolicitud.REGISTRADA);
