@@ -5,11 +5,8 @@ import com.fonavi.faip.app.dto.SeguimientoResponse;
 import com.fonavi.faip.app.dto.SolicitudCreateRequest;
 import com.fonavi.faip.app.dto.SolicitudResponse;
 import com.fonavi.faip.app.dto.SolicitudUpdateEstadoRequest;
-import com.fonavi.faip.app.entity.EstadoSolicitud;
-import com.fonavi.faip.app.entity.Solicitud;
-import com.fonavi.faip.app.entity.SolicitudSeguimiento;
-import com.fonavi.faip.app.repository.SolicitudRepository;
-import com.fonavi.faip.app.repository.SolicitudSeguimientoRepository;
+import com.fonavi.faip.app.entity.*;
+import com.fonavi.faip.app.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,6 +28,9 @@ public class SolicitudServiceImpl implements SolicitudService {
 
     //Contador en memoria (opcional si luego lo haces con base de datos)
     private static final AtomicInteger contador = new AtomicInteger(0);
+    private final DepartamentoRepository departamentoRepository;
+    private final ProvinciaRepository provinciaRepository;
+    private final DistritoRepository distritoRepository;
 
     @Override
     public SolicitudResponse crear(SolicitudCreateRequest request) {
@@ -46,9 +46,20 @@ public class SolicitudServiceImpl implements SolicitudService {
         entidad.setApellidosMaterno(request.apellidos_materno());
         entidad.setRazonSocial(request.razonSocial());
         entidad.setPais(request.pais() == null || request.pais().isBlank() ? "Perú" : request.pais());
-        entidad.setDepartamento(request.departamento());
+/*        entidad.setDepartamento(request.departamento());
         entidad.setProvincia(request.provincia());
-        entidad.setDistrito(request.distrito());
+        entidad.setDistrito(request.distrito());*/
+        Departamento dep = departamentoRepository.findById(request.departamento())
+                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+        Provincia prov = provinciaRepository.findById(request.provincia())
+                .orElseThrow(() -> new RuntimeException("Provincia no encontrada"));
+        Distrito dist = distritoRepository.findById(request.distrito())
+                .orElseThrow(() -> new RuntimeException("Distrito no encontrado"));
+
+        entidad.setDepartamento(dep);
+        entidad.setProvincia(prov);
+        entidad.setDistrito(dist);
+
         entidad.setDireccion(request.direccion());
 
 

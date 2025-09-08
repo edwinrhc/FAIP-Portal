@@ -57,14 +57,31 @@ public class Solicitud {
     @Column(length = 50)
     private String pais = "Perú";
 
-    @Column(length = 50)
+/*    @Column(length = 50)
     private String departamento;
 
     @Column(length = 50)
     private String provincia;
 
     @Column(length = 50)
-    private String distrito;
+    private String distrito;*/
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departamento_id", nullable = false,
+            foreignKey = @ForeignKey(name = "solicitud_departamento_id_fk"))
+    private Departamento departamento;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "provincia_id", nullable = false,
+            foreignKey = @ForeignKey(name = "solicitud_provincia_id_fk"))
+    private Provincia provincia;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "distrito_id", nullable = false,
+            foreignKey = @ForeignKey(name = "solicitud_distrito_id_fk"))
+    private Distrito distrito;
+
+
 
     @Column(length = 200)
     private String direccion;

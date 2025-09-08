@@ -24,9 +24,13 @@ public record SolicitudCreateRequest(
         String numeroDocumento,
 
         @Size(max = 100) String pais,
-        @Size(max = 100) String departamento,
+  /*      @Size(max = 100) String departamento,
         @Size(max = 100) String provincia,
-        @Size(max = 100) String distrito,
+        @Size(max = 100) String distrito,*/
+        Long departamento,
+        Long provincia,
+        Long distrito,
+
         @Size(max = 255) String direccion,
 
         @NotBlank(message = "El email es obligatorio")
